@@ -45,8 +45,22 @@
             </div>
         </div>
     </div>
+    <br />
     <div class="container body-content">
-        @RenderBody()
+        <div class="row">
+            <div class="col-md-2 margin">
+                <div>
+                    <span>User1</span><br />
+                    <span>User2</span><br />
+                    <span>User3</span><br />
+                </div>
+            </div>
+            <div class="col-md-10">
+                @RenderBody()
+            </div>
+            
+        </div>
+        
         <hr />
         <footer>
             <p>&copy; 2017 - ChatUserApplication</p>

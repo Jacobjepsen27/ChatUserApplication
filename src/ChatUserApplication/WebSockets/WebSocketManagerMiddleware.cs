@@ -22,6 +22,7 @@ namespace ChatUserApplication.WebSockets
 
         public async Task Invoke(HttpContext context)
         {
+            //If not websocketrequest, return
             if (!context.WebSockets.IsWebSocketRequest)
                 return;
 
