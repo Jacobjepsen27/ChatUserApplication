@@ -17,7 +17,7 @@ namespace ChatUserApplication.WebSockets.WebSocketImplementation
         public override async Task OnConnected(WebSocket socket)
         {
             await base.OnConnected(socket); //Adds socket to dictionary
-            var socketId = WebSocketConnectionManager.GetId(socket);
+            //var socketId = WebSocketConnectionManager.GetId(socket);
             //await SendMessageToAllAsync($"{socketId} is now connected");
         }
 
@@ -28,6 +28,13 @@ namespace ChatUserApplication.WebSockets.WebSocketImplementation
             var message = $"{Encoding.UTF8.GetString(buffer, 0, result.Count)}";
 
             await SendMessageToAllAsync(message);
+        }
+
+        public override async Task GetOnlineUsers(WebSocket socket)
+        {
+            int count = WebSocketConnectionManager.GetAll().Count;
+            //await SendMessageToAllAsync(count.ToString());
+            await SendMessageAsync(socket,count.ToString());
         }
     }
 }

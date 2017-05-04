@@ -26,12 +26,22 @@ namespace ChatUserApplication.WebSockets
             return services;
         }
 
-        //For 
+         
         public static IApplicationBuilder MapWebSocketManager(this IApplicationBuilder app,
                                                               PathString path,
                                                               WebSocketHandler handler)
         {
             return app.Map(path, (_app) => _app.UseMiddleware<WebSocketManagerMiddleware>(handler));
+            //return app.Use(async (context, next) => {
+                
+            //});
+        }
+
+        public static IApplicationBuilder MapWebSocketUserManager(this IApplicationBuilder app,
+                                                              PathString path,
+                                                              WebSocketHandler handler)
+        {
+            return app.Map(path, (_app) => _app.UseMiddleware<WebSocketUserManagerMiddleware>(handler));
         }
     }
 }

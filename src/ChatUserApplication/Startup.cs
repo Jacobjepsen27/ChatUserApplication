@@ -90,7 +90,8 @@ namespace ChatUserApplication
 
             app.UseWebSockets();
             app.MapWebSocketManager("/ws", serviceProvider.GetService<ChatMessageHandler>());
-
+            //app.MapWebSocketUserManager("/onlineusers", serviceProvider.GetService<ChatMessageHandler>());
+            //app.UseMiddleware<WebSocketManagerMiddleware>(serviceProvider.GetService<ChatMessageHandler>());
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>

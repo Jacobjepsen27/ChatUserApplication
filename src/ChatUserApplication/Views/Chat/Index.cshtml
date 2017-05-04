@@ -3,63 +3,170 @@
 
 <hr />
 <h1>This should be mapped to "/ws"</h1>
-<div class="form_group">
-    <input type=text id="textInput" placeholder="Enter your text" class="form-control" />
-    <button class="btn btn-default" id="sendButton">Send</button>
+<h3>Online users: <span id="onlineUsers"></span></h3>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form_group">
+            <input type=text id="textInput" placeholder="Enter your text" class="form-control" />
+            <button class="btn btn-default" id="sendButton">Send</button>
+            <ul id="messages"></ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form_group">
+            <input type=text id="receiver" placeholder="mail@mail.com" class="form-control" />
+            <input type=text id="privateTextInput" placeholder="Enter your private text" class="form-control" />
+            <button class="btn btn-default" id="sendPrivateButton">Send</button>
+            <ul id="privateMessages"></ul>
+        </div>
+    </div>
 </div>
+    
 
-<ul id="messages"></ul>
+
 
 @section scripts{
 <script language="javascript" type="text/javascript">
-        var uri = "ws://" + window.location.host + "/ws";
-        function connect() {
-            socket = new WebSocket(uri);
-            socket.onopen = function(event) {
-                console.log("opened connection to " + uri);
-            };
-            socket.onclose = function(event) {
-                console.log("closed connection from " + uri);
-            };
-            socket.onmessage = function(event) {
-                appendItem(list, event.data);
-                console.log(event.data);
-            };
-            socket.onerror = function(event) {
-                console.log("error: " + event.data);
-            };
-        }
-        connect();
-        var list = document.getElementById("messages");
-        var button = document.getElementById("sendButton");
-        var chatName = "@Model.Name";
-        button.addEventListener("click", function() {
+    var uri = "ws://" + window.location.host + "/ws";
+    function connect() {
+        socket = new WebSocket(uri);
+        socket.onopen = function(event) {
+            console.log("opened connection to " + uri);
+        };
+        socket.onclose = function(event) {
+            console.log("closed connection from " + uri);
+        };
+        socket.onmessage = function(event) {
+            appendItem(list, event.data);
+            console.log(event.data);
+        };
+        socket.onerror = function(event) {
+            console.log("error: " + event.data);
+        };
+    }
+    connect();
+    var list = document.getElementById("messages");
+    var button = document.getElementById("sendButton");
+    var chatName = "@Model.Name";
+    button.addEventListener("click", function() {
 
+        var input = document.getElementById("textInput");
+
+        sendMessage(chatName+": "+input.value);
+
+        input.value = "";
+    });
+    function sendMessage(message) {
+        console.log("Sending: " + message);
+        socket.send(message);
+    }
+    function appendItem(list, message) {
+        var item = document.createElement("li");
+        item.appendChild(document.createTextNode(message));
+        list.appendChild(item);
+    }
+    $(document).keypress(function (e) {
+        //13 = Enter on Keyboard
+        if (e.which == 13) {
             var input = document.getElementById("textInput");
 
-            sendMessage(chatName+": "+input.value);
+            sendMessage(chatName + ": " + input.value);
 
             input.value = "";
-        });
-        function sendMessage(message) {
-            console.log("Sending: " + message);
-            socket.send(message);
         }
-        function appendItem(list, message) {
-            var item = document.createElement("li");
-            item.appendChild(document.createTextNode(message));
-            list.appendChild(item);
-        }
-        $(document).keypress(function (e) {
-            //13 = Enter on Keyboard
-            if (e.which == 13) {
-                var input = document.getElementById("textInput");
-
-                sendMessage(chatName + ": " + input.value);
-
-                input.value = "";
-            }
-        });
+    });
+    //window.setInterval(getOnlineUsers, 5000);
+    //function getOnlineUsers() {
+    //    var uri = "ws://" + window.location.host + "/onlineusers";
+    //    socket = new WebSocket(uri);
+    //    socket.onopen = function (event) {
+    //        console.log("opened user connection to " + uri);
+    //    };
+    //    socket.onclose = function (event) {
+    //        console.log("closed user connection from " + uri);
+    //    };
+    //    socket.onmessage = function (event) {
+    //        //appendItem(list, event.data);
+    //        appendUsers(event.data);
+    //        console.log(event.data);
+    //    };
+    //    socket.onerror = function (event) {
+    //        console.log("error: " + event.data);
+    //    };
+        
+    //}
+    //function appendUsers(message) {
+    //    $("#onlineUsers").text(message);
+    //}
 </script>
+
+@*<script language="javascript" type="text/javascript">
+
+  var wsUri = "ws://echo.websocket.org/";
+  var output;
+
+  function init()
+  {
+    output = document.getElementById("output");
+    testWebSocket();
+  }
+
+  function testWebSocket()
+  {
+    websocket = new WebSocket(wsUri);
+    websocket.onopen = function(evt) { onOpen(evt) };
+    //websocket.onclose = function(evt) { onClose(evt) };
+    websocket.onmessage = function(evt) { onMessage(evt) };
+    websocket.onerror = function(evt) { onError(evt) };
+  }
+
+  function onOpen(evt)
+  {
+      writeToScreen("CONNECTED");
+      var number = 5;
+      for (i = 0; i < number; i++) {
+          setTimeout(function () {
+              doSend("WebSocket rocks");
+          },3000);
+          
+      }
+      websocket.close();
+  }
+
+  function onClose(evt)
+  {
+    writeToScreen("DISCONNECTED");
+  }
+
+  function onMessage(evt)
+  {
+    writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+    //websocket.close();
+  }
+
+  function onError(evt)
+  {
+    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+  }
+
+  function doSend(message)
+  {
+    writeToScreen("SENT: " + message);
+    websocket.send(message);
+  }
+
+  function writeToScreen(message)
+  {
+    var pre = document.createElement("p");
+    pre.style.wordWrap = "break-word";
+    pre.innerHTML = message;
+    output.appendChild(pre);
+  }
+
+  window.addEventListener("load", init, false);
+
+</script>
+
+<div id="output"></div>*@
 }
 

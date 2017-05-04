@@ -56,5 +56,7 @@ namespace ChatUserApplication.WebSockets
         }
 
         public abstract Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer);
+
+        public abstract Task GetOnlineUsers(WebSocket socket);
     }
 }
