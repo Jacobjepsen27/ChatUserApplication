@@ -1,9 +1,7 @@
 language: csharp
-solution: ChatUserApplication.sln
+dist: trusty
+sudo: required
 mono: none
 dotnet: 1.0.1
-dist: trusty
-install:
-  - nuget restore ChatUserApplication.sln
 script:
-  - xbuild /p:Configuration=Release ChatUserApplication.sln
+  - ./build.sh --quiet verify
